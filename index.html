@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stopwatch</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #111;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .stopwatch-container {
+    text-align: center;
+  }
+
+  .display {
+    font-size: 3em;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #444;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .controls {
+    margin-top: 20px;
+  }
+
+  button {
+    font-size: 1.5em;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+</style>
+</head>
+<body>
+<div class="stopwatch-container">
+  <div class="display">00:00:00</div>
+  <div class="controls">
+    <button id="startStop">Start</button>
+    <button id="reset">Reset</button>
+  </div>
+</div>
+
+<script>
+  let startTime;
+  let elapsedTime = 0;
+  let timerInterval;
+
+  function startStop() {
+    if (!startTime) {
+      startTime = Date.now() - elapsedTime;
+      timerInterval = setInterval(updateDisplay, 10);
+      document.getElementById("startStop").textContent = "Stop";
+    } else {
+      clearInterval(timerInterval);
+      startTime = null;
+      document.getElementById("startStop").textContent = "Start";
+    }
+  }
+
+  function updateDisplay() {
+    const currentTime = Date.now();
+    elapsedTime = currentTime - startTime;
+    const formattedTime = formatTime(elapsedTime);
+    document.querySelector(".display").textContent = formattedTime;
+  }
+
+  function formatTime(time) {
+    const hours = Math.floor(time / 3600000);
+    const minutes = Math.floor((time % 3600000) / 60000);
+    const seconds = Math.floor((time % 60000) / 1000);
+    const milliseconds = Math.floor(time % 1000 / 10);
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
+  }
+
+  function resetStopwatch() {
+    clearInterval(timerInterval);
+    startTime = null;
+    elapsedTime = 0;
+    document.querySelector(".display").textContent = "00:00:00";
+    document.getElementById("startStop").textContent = "Start";
+  }
+
+  document.getElementById("startStop").addEventListener("click", startStop);
+  document.getElementById("reset").addEventListener("click", resetStopwatch);
+</script>
+</body>
+</html>
